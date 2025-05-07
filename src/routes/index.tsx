@@ -16,8 +16,8 @@ export type StackRoutes = NativeStackNavigationProp<StackRoutesProps>
 
 const Routes = () => {
   return ( 
-    <AuthProvider>
     <NavigationContainer>
+      <AuthProvider>
       <Navigator
        screenOptions={{
         headerShown: false
@@ -26,8 +26,8 @@ const Routes = () => {
         <Screen name="login" component={Login} />
         <Screen name="home" component={Home} />
       </Navigator>
-    </NavigationContainer>
     </AuthProvider>
+    </NavigationContainer>
    );
 }
  

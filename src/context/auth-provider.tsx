@@ -1,5 +1,16 @@
 import { createContext, useState } from "react";
 import { StackRoutes } from "../routes";
+import axios, { AxiosResponse } from 'axios';
+import Toast from "react-native-toast-message";
+
+interface SessionResponse{
+  token: string
+}
+
+interface RegisterResponse {
+  success: boolean;
+  message?: string;
+}
 
 interface authProps{
   handleLogin: (email: string, password: string) => void;
@@ -22,36 +33,48 @@ export function AuthProvider({children}: {children: React.ReactNode}){
   }
 
   const handleLogin = (email: string, password: string) => {
-    fetch('http://localhost:3333/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email,
-        password,
-        expiresInMins: 30, 
-      }),
+    axios.post<SessionResponse>('http://172.17.0.1:3333/session', {
+      email,
+      password,
+      expiresInMins: 30,
     })
-    .then(res => res.json())
-    .then((data) => {
-      setToken(data.accessToken); 
+    .then((response: AxiosResponse<SessionResponse>) => {
+      console.log(response.data);
+      setToken(response.data.token);
+      Toast.show({
+        type: 'success',
+        text1: 'Login foi efetuado com sucesso!',
+
+      });
     })
+    .catch(error => {
+      console.error("Axios error:", error);
+    });
   }
 
   const handleRegister = (name: string, email: string, password: string) => {
-    fetch('http://localhost:3333/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-        expiresInMins: 30, 
-      }),
+    axios.post<RegisterResponse>('http://172.17.0.1:3333/user', {
+      name,
+      email,
+      password,
+      expiresInMins: 30,
     })
-    .then(res => res.json())
-    .then((data) => {
-      if(data) return true;
+    .then((response: AxiosResponse<RegisterResponse>) => {
+      console.log(response.data);
+      Toast.show({
+        type: 'success',
+        text1: 'Usuário criado com sucesso!',
+        text2: 'Faça login.',
+      });
     })
+    .catch(error => {
+      console.error("Axios error:", error);
+      Toast.show({
+        type: 'error',
+        text1: 'Erro de conexão',
+        text2: 'Verifique sua rede ou tente novamente.',
+      });
+    });
   }
 
   return(
