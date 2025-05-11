@@ -7,12 +7,11 @@ import {
   TextInputChangeEventData,
   View,
   StyleSheet,
+  Image,
 } from "react-native";
 import { StackRoutes } from "../routes";
 import { useState } from "react";
 import { useAuth } from "../hooks/use-auth";
-import { ChangeEvent } from "react";
-import { LinearGradient } from "expo-linear-gradient";
 
 const Register = () => {
   const { navigate } = useNavigation<StackRoutes>();
@@ -45,6 +44,7 @@ const Register = () => {
 
   return (
     <View style={styles.body}>
+      <Image source={require('../../assets/logo.png')} style={styles.imageLogo} />
       <View style={styles.container}>
         <Text style={styles.title}>Cadastro</Text>
         <Text style={styles.paragraph}>Faça seu cadastro abaixo!</Text>
@@ -89,7 +89,14 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     height: "100%",
-    backgroundColor: "#9C9BA0",
+    alignItems: "center",
+    backgroundColor: "#121b27",
+  },
+  imageLogo: {
+    width: 200,
+    height: 200,
+    alignSelf: "center",
+    marginTop: 50,
   },
   container: {
     borderTopStartRadius: 25,
@@ -97,7 +104,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: "100%",
-    height: "75%",
+    height: "70%",
     justifyContent: "center",
     backgroundColor: "#F1F0F8",
   },

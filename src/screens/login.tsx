@@ -7,6 +7,7 @@ import {
   TextInputChangeEventData,
   View,
   StyleSheet,
+  Image,
 } from "react-native";
 import { StackRoutes } from "../routes";
 import { useState } from "react";
@@ -36,6 +37,7 @@ const Login = () => {
 
   return (
     <View style={styles.body}>
+      <Image source={require('../../assets/logo.png')} style={styles.imageLogo} />
       <View style={styles.container}>
         <Text style={styles.title}>Login</Text>
         <Text style={styles.paragraph}>Faça seu login abaixo!</Text>
@@ -75,8 +77,9 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     flexDirection: "column",
+    alignItems: "center",
     height: "100%",
-    backgroundColor: "#9C9BA0",
+    backgroundColor: "#121b27",
   },
   container: {
     borderTopStartRadius: 25,
@@ -87,6 +90,12 @@ const styles = StyleSheet.create({
     height: "70%",
     justifyContent: "center",
     backgroundColor: "#F1F0F8",
+  },
+  imageLogo:{
+    width: 200,
+    height: 200,
+    alignSelf: "center",
+    marginTop: 50,
   },
   title: {
     textAlign: "center",
