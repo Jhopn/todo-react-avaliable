@@ -56,12 +56,7 @@ export default function Home() {
   }
 
   async function handleDone(task: Task) {
-    await api.patch(`task/${task.id}`, {
-      data: {
-        id: task.id,
-        done: !task.done
-      }
-    }, {
+    await api.patch(`task/${task.id}`, undefined, {
       headers: {
         'Content-Type': 'application/json',
         auhorization: `Bearer ${token}`,
