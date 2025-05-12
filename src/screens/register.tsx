@@ -12,6 +12,8 @@ import {
 import { StackRoutes } from "../routes";
 import { useState } from "react";
 import { useAuth } from "../hooks/use-auth";
+import Toast from "react-native-toast-message";
+import * as Animatable from 'react-native-animatable';
 
 const Register = () => {
   const { navigate } = useNavigation<StackRoutes>();
@@ -39,6 +41,14 @@ const Register = () => {
   };
 
   const handlePressRegister = async (name: string, email: string, password: string) => {
+    if (!email || !password) {
+      Toast.show({
+        type: "error",
+        text1: "Erro de autenticação",
+        text2: "Preencha todos os campos!",
+      });
+      return;
+    }
     handleRegister(name, email, password);
     setName("")
     setEmail("")
@@ -52,7 +62,9 @@ const Register = () => {
   return (
     <View style={styles.body}>
       <Image source={require('../../assets/logo.png')} style={styles.imageLogo} />
-      <View style={styles.container}>
+      <Animatable.View
+        animation="fadeInUp"
+        duration={600} style={styles.container}>
         <Text style={styles.title}>Cadastro</Text>
         <Text style={styles.paragraph}>Faça seu cadastro abaixo!</Text>
         <View style={styles.content}>
@@ -70,6 +82,7 @@ const Register = () => {
             style={styles.input}
             placeholder="Digite sua senha..."
             onChange={handlePasswordChange}
+            secureTextEntry={true}
           />
           <View style={styles.button}>
             <Button
@@ -86,7 +99,7 @@ const Register = () => {
             />
           </View>
         </View>
-      </View>
+      </Animatable.View>
     </View>
   );
 };

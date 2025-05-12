@@ -7,6 +7,7 @@ import Toast from 'react-native-toast-message';
 import { useAuth } from '../hooks/use-auth';
 import { useNavigation } from '@react-navigation/native';
 import { StackRoutes } from '../routes';
+import * as Animatable from 'react-native-animatable';
 
 type Task = {
   id: string
@@ -20,11 +21,20 @@ export default function Home() {
   const [task, setTask] = useState("")
   const [tasks, setTasks] = useState<Task[]>([])
 
-  if(!token) {
+  if (!token) {
     navigate("login");
   }
 
   async function handleSubmit() {
+    if(task === "") {
+      Toast.show({
+        type: 'error',
+        text1: 'Erro de autenticação',
+        text2: "Preencha todos os campos!",
+      });
+      return;
+    }
+
     await api.post('task', {
       title: task,
     }, {
@@ -59,7 +69,7 @@ export default function Home() {
     await api.patch(`task/${task.id}`, undefined, {
       headers: {
         'Content-Type': 'application/json',
-        auhorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     }).then((response) => {
       console.log(response.data);
@@ -128,14 +138,17 @@ export default function Home() {
     fetchData();
   }, []);
 
-  function handleExit(){
+  function handleExit() {
     handleLogout();
   }
 
   return (
 
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
+    <Animatable.View
+      animation="fadeInUp"
+      duration={600}
+      style={styles.container}>
+      <StatusBar style="light" />
       <View style={styles.contentTitle}>
         <Image source={require('../../assets/logo.png')} style={styles.imageLogo} />
         <TouchableOpacity>
@@ -146,11 +159,12 @@ export default function Home() {
       <View style={styles.content}>
         <TextInput style={styles.inputTarefa}
           placeholder='Digite a tarefa...'
-          placeholderTextColor="#52525b"
+          placeholderTextColor="#a3a2a5"
           value={task}
           onChangeText={setTask}
         ></TextInput>
         <TouchableOpacity style={styles.botaoAdiciona} onPress={handleSubmit}>
+          <FontAwesome name="plus" size={12} color="white" />
           <Text style={styles.textBotao}>Adicionar</Text>
         </TouchableOpacity>
       </View>
@@ -158,8 +172,8 @@ export default function Home() {
       <ScrollView>
         {
           tasks.map((task) => (
-            <View style={styles.taskContainer} key={task.id}>
-              <Text style={[styles.task, task.done && { textDecorationLine: "line-through", color: "red" },]}>{task.title}</Text>
+            <View style={[styles.taskContainer, { borderColor: task.done ? '#4dc681' : '#ef4444' }]} key={task.id}>
+              <Text style={[styles.task, task.done && { textDecorationLine: "line-through", color: "#4dc681" }]}>{task.title}</Text>
               <View style={styles.buttons}>
                 <TouchableOpacity style={styles.buttonTask} onPress={() => handleDone(task)}>
                   {task.done ? (
@@ -176,7 +190,13 @@ export default function Home() {
           ))
         }
       </ScrollView>
-    </SafeAreaView>
+      <View style={styles.footerContent}>
+        <Text style={styles.bottomText}>
+          Desenvolvido por
+          Pedro e Jhoão - 2025
+        </Text>
+      </View>
+    </Animatable.View>
   );
 }
 
@@ -188,7 +208,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     alignItems: 'center',
   },
-  contentTitle:{
+  contentTitle: {
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 40,
@@ -200,7 +220,7 @@ const styles = StyleSheet.create({
     height: 100,
     alignSelf: "center",
   },
-  exit:{
+  exit: {
     color: 'white',
     fontSize: 16,
     backgroundColor: '#ef4444',
@@ -218,13 +238,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexDirection: 'row',
     gap: 14,
+    marginBottom: 10,
   },
   textBotao: {
     color: 'white',
   },
   botaoAdiciona: {
-    backgroundColor: '#181818',
-    padding: 12,
+    backgroundColor: '#4dc681',
+    padding: 8,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
@@ -232,19 +253,25 @@ const styles = StyleSheet.create({
   inputTarefa: {
     color: 'white',
     padding: 4,
-    height: 42,
+    height: 45,
     borderRadius: 8,
-    borderColor: '#a1a1aa',
+    borderColor: '#a3a2a5',
+    backgroundColor: '#000000',
     borderWidth: 2,
     fontSize: 14,
     flex: 1
   },
   taskContainer: {
-    marginVertical: 10,
+    marginVertical: 5,
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    backgroundColor: '#000000',
+    borderRadius: 12,
+    padding: 6,
+    paddingLeft: 25,
+    borderWidth: 2,
   },
   task: {
     color: 'white',
@@ -258,5 +285,17 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: 'row',
     gap: 5,
-  }
+  },
+  footerContent:{
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: '#000',
+  },
+  bottomText: {
+    color: 'white',
+    fontSize: 12,
+    padding: 5,
+    textAlign: 'center',
+  },
 });

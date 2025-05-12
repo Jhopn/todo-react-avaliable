@@ -12,6 +12,8 @@ import {
 import { StackRoutes } from "../routes";
 import { useState } from "react";
 import { useAuth } from "../hooks/use-auth";
+import Toast from "react-native-toast-message";
+import * as Animatable from 'react-native-animatable';
 
 const Login = () => {
   const { navigate } = useNavigation<StackRoutes>();
@@ -32,6 +34,14 @@ const Login = () => {
   };
 
   const handleLoginClick = (email: string, password: string) => {
+    if (!email || !password) {
+      Toast.show({
+        type: "error",
+        text1: "Erro de autenticação",
+        text2: "Preencha todos os campos!",
+      });
+      return;
+    }
     handleLogin(email, password);
     setEmail("");
     setPassword("");
@@ -44,7 +54,10 @@ const Login = () => {
   return (
     <View style={styles.body}>
       <Image source={require('../../assets/logo.png')} style={styles.imageLogo} />
-      <View style={styles.container}>
+      <Animatable.View
+        animation="fadeInUp"
+        duration={600}
+        style={styles.container}>
         <Text style={styles.title}>Login</Text>
         <Text style={styles.paragraph}>Faça seu login abaixo!</Text>
         <View style={styles.content}>
@@ -56,6 +69,7 @@ const Login = () => {
           <TextInput
             style={styles.input}
             placeholder="Digite sua senha..."
+            secureTextEntry={true}
             onChange={handlePasswordChange}
           />
 
@@ -74,7 +88,7 @@ const Login = () => {
             />
           </View>
         </View>
-      </View>
+      </Animatable.View>
     </View>
   );
 };
@@ -97,7 +111,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#F1F0F8",
   },
-  imageLogo:{
+  imageLogo: {
     width: 200,
     height: 200,
     alignSelf: "center",
