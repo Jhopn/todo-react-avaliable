@@ -21,12 +21,9 @@ export default function Home() {
   const [task, setTask] = useState("")
   const [tasks, setTasks] = useState<Task[]>([])
 
-  if (!token) {
-    navigate("login");
-  }
 
   async function handleSubmit() {
-    if(task === "") {
+    if (task === "") {
       Toast.show({
         type: 'error',
         text1: 'Erro de autenticação',
@@ -136,7 +133,10 @@ export default function Home() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+    if (!token) {
+      navigate("login");
+    }
+  }, [token]);
 
   function handleExit() {
     handleLogout();
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 5,
   },
-  footerContent:{
+  footerContent: {
     position: 'absolute',
     bottom: 0,
     width: '100%',

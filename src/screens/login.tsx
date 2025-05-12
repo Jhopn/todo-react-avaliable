@@ -10,7 +10,7 @@ import {
   Image,
 } from "react-native";
 import { StackRoutes } from "../routes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../hooks/use-auth";
 import Toast from "react-native-toast-message";
 import * as Animatable from 'react-native-animatable';
@@ -47,9 +47,13 @@ const Login = () => {
     setPassword("");
   };
 
-  if (token) {
-    navigate("home");
-  }
+
+  useEffect(() => {
+    if (token) {
+      navigate("home");
+    }
+  }, [token]);
+
 
   return (
     <View style={styles.body}>
