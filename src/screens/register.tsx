@@ -38,6 +38,13 @@ const Register = () => {
     setPassword(event.nativeEvent.text);
   };
 
+  const handlePressRegister = async (name: string, email: string, password: string) => {
+    handleRegister(name, email, password);
+    setName("")
+    setEmail("")
+    setPassword("")
+  }
+
   if (token) {
     navigate("home");
   }
@@ -67,7 +74,7 @@ const Register = () => {
           <View style={styles.button}>
             <Button
               title="Cadastrar"
-              onPress={() => handleRegister(name, email, password)}
+              onPress={() => handlePressRegister(name, email, password)}
             />
           </View>
 
@@ -104,7 +111,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: "100%",
-    height: "70%",
+    height: "68%",
     justifyContent: "center",
     backgroundColor: "#F1F0F8",
   },

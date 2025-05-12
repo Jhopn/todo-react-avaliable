@@ -1,10 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, Alert } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, Alert, Image } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
 import { api } from '../service/api';
 import Toast from 'react-native-toast-message';
 import { useAuth } from '../hooks/use-auth';
+import { useNavigation } from '@react-navigation/native';
+import { StackRoutes } from '../routes';
 
 type Task = {
   id: string
@@ -13,9 +15,14 @@ type Task = {
 }
 
 export default function Home() {
-  const { token } = useAuth();
+  const { navigate } = useNavigation<StackRoutes>();
+  const { token, handleLogout } = useAuth();
   const [task, setTask] = useState("")
   const [tasks, setTasks] = useState<Task[]>([])
+
+  if(!token) {
+    navigate("login");
+  }
 
   async function handleSubmit() {
     await api.post('task', {
@@ -126,15 +133,24 @@ export default function Home() {
     fetchData();
   }, []);
 
+  function handleExit(){
+    handleLogout();
+  }
+
   return (
 
     <SafeAreaView style={styles.container}>
       <StatusBar style="auto" />
-      <Text style={styles.titulo}>Todo App</Text>
+      <View style={styles.contentTitle}>
+        <Image source={require('../../assets/logo.png')} style={styles.imageLogo} />
+        <TouchableOpacity>
+          <Text style={styles.exit} onPress={handleExit}>Sair</Text>
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.content}>
         <TextInput style={styles.inputTarefa}
-          placeholder='Digite a terefa...'
+          placeholder='Digite a tarefa...'
           placeholderTextColor="#52525b"
           value={task}
           onChangeText={setTask}
@@ -172,9 +188,31 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#DFDB00',
+    backgroundColor: '#121b27',
     padding: 20,
+    paddingTop: 50,
     alignItems: 'center',
+  },
+  contentTitle:{
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 40,
+    width: '100%',
+    alignItems: 'center',
+  },
+  imageLogo: {
+    width: 100,
+    height: 100,
+    alignSelf: "center",
+  },
+  exit:{
+    color: 'white',
+    fontSize: 16,
+    backgroundColor: '#ef4444',
+    padding: 10,
+    width: 70,
+    textAlign: 'center',
+    borderRadius: 8,
   },
   titulo: {
     color: 'white',
@@ -182,7 +220,7 @@ const styles = StyleSheet.create({
     fontSize: 27,
   },
   content: {
-    marginTop: 30,
+    marginTop: 10,
     flexDirection: 'row',
     gap: 14,
   },
@@ -195,7 +233,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
-
   },
   inputTarefa: {
     color: 'white',

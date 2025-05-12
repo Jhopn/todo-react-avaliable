@@ -1,8 +1,10 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { StackRoutes } from "../routes";
 import { api } from "../service/api";
 import { AxiosResponse } from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from "react-native-toast-message";
+import { useNavigation } from "@react-navigation/native";
 
 interface SessionResponse {
   token: string
@@ -17,6 +19,7 @@ interface authProps {
   handleLogin: (email: string, password: string) => void;
   verifyToken: (token: string) => void;
   handleRegister: (name: string, email: string, password: string) => void;
+  handleLogout: () => void;
   token: string;
 }
 
@@ -26,11 +29,26 @@ export const AuthContext = createContext<authProps>(
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState('')
+  const { navigate } = useNavigation<StackRoutes>();
 
-  const verifyToken = () => {
+  useEffect(() => {
+    verifyToken();
+  }, []);
+
+  const verifyToken = async () => {
+    const token = await AsyncStorage.getItem('token');
     if (token) {
-
+      setToken(token);
     }
+  }
+
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('token');
+    setToken('');
+    Toast.show({
+      type: 'success',
+      text1: 'Logout realizado com sucesso!',
+    });
   }
 
   const handleLogin = (email: string, password: string) => {
@@ -42,10 +60,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .then((response: AxiosResponse<SessionResponse>) => {
         console.log(response.data);
         setToken(response.data.token);
+        AsyncStorage.setItem('token', response.data.token);
         Toast.show({
           type: 'success',
           text1: 'Login foi efetuado com sucesso!',
         });
+        
       })
       .catch(error => {
         console.error("Axios error:", error);
@@ -71,6 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           text1: 'Usuário criado com sucesso!',
           text2: 'Faça login.',
         });
+        navigate("login");
       })
       .catch(error => {
         console.error("Axios error:", error);
@@ -83,7 +104,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ handleLogin, verifyToken, token, handleRegister }}>
+    <AuthContext.Provider value={{ handleLogin, verifyToken, token, handleRegister, handleLogout }}>
       {children}
     </AuthContext.Provider>
   )

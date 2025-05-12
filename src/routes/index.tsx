@@ -8,6 +8,7 @@ import { AuthProvider } from "../context/auth-provider";
 type StackRoutesProps = {
   login: undefined;
   home: undefined;
+  register: undefined;
 }
 
 const {Navigator, Screen} = createNativeStackNavigator<StackRoutesProps>();

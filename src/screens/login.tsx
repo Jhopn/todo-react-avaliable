@@ -31,6 +31,12 @@ const Login = () => {
     setPassword(event.nativeEvent.text);
   };
 
+  const handleLoginClick = (email: string, password: string) => {
+    handleLogin(email, password);
+    setEmail("");
+    setPassword("");
+  };
+
   if (token) {
     navigate("home");
   }
@@ -56,7 +62,7 @@ const Login = () => {
           <View style={styles.button}>
             <Button
               title="Entrar"
-              onPress={() => handleLogin(email, password)}
+              onPress={() => handleLoginClick(email, password)}
             />
           </View>
 
@@ -87,7 +93,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     width: "100%",
-    height: "70%",
+    height: "65%",
     justifyContent: "center",
     backgroundColor: "#F1F0F8",
   },
