@@ -65,9 +65,7 @@ const Register = () => {
   return (
     <View style={styles.body}>
       <Image source={require('../../assets/logo.png')} style={styles.imageLogo} />
-      <Animatable.View
-        animation="fadeInUp"
-        duration={600} style={styles.container}>
+      
         <Text style={styles.title}>Cadastro</Text>
         <Text style={styles.paragraph}>Faça seu cadastro abaixo!</Text>
         <View style={styles.content}>
@@ -102,7 +100,7 @@ const Register = () => {
             />
           </View>
         </View>
-      </Animatable.View>
+    
     </View>
   );
 };
@@ -165,4 +163,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Register;
+export default Register
